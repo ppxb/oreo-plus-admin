@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import { VbenAvatar } from '../avatar';
 
 interface Props {
@@ -23,6 +25,10 @@ interface Props {
    */
   src?: string;
   /**
+   * @zh_CN 暗色主题 Logo 图标 (可选，若不设置则使用 src)
+   */
+  srcDark?: string;
+  /**
    * @zh_CN Logo 文本
    */
   text: string;
@@ -36,13 +42,21 @@ defineOptions({
   name: 'VbenLogo',
 });
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   collapsed: false,
   href: 'javascript:void 0',
   logoSize: 32,
   src: '',
+  srcDark: '',
   theme: 'light',
   fit: 'cover',
+});
+
+const logSrc = computed(() => {
+  if (props.theme === 'dark' && props.srcDark) {
+    return props.srcDark;
+  }
+  return props.src;
 });
 </script>
 
@@ -54,9 +68,9 @@ withDefaults(defineProps<Props>(), {
       class="flex h-full items-center gap-2 overflow-hidden px-3 text-lg leading-normal transition-all duration-500"
     >
       <VbenAvatar
-        v-if="src"
+        v-if="logSrc"
         :alt="text"
-        :src="src"
+        :src="logSrc"
         :size="logoSize"
         :fit="fit"
         class="relative rounded-none bg-transparent"

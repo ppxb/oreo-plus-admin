@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { ToolbarType } from './types';
 
+import { computed } from 'vue';
+
 import { preferences, usePreferences } from '@vben/preferences';
 
 import { Copyright } from '../basic/copyright';
@@ -11,6 +13,7 @@ import Toolbar from './toolbar.vue';
 interface Props {
   appName?: string;
   logo?: string;
+  logoDark?: string;
   pageTitle?: string;
   pageDescription?: string;
   sloganImage?: string;
@@ -20,10 +23,11 @@ interface Props {
   clickLogo?: () => void;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   appName: '',
   copyright: true,
   logo: '',
+  logoDark: '',
   pageDescription: '',
   pageTitle: '',
   sloganImage: '',
@@ -34,6 +38,13 @@ withDefaults(defineProps<Props>(), {
 
 const { authPanelCenter, authPanelLeft, authPanelRight, isDark } =
   usePreferences();
+
+const logoSrc = computed(() => {
+  if (isDark.value && props.logoDark) {
+    return props.logoDark;
+  }
+  return props.logo;
+});
 </script>
 
 <template>
@@ -65,14 +76,21 @@ const { authPanelCenter, authPanelLeft, authPanelRight, isDark } =
     <slot name="logo">
       <!-- 头部 Logo 和应用名称 -->
       <div
-        v-if="logo || appName"
+        v-if="logoSrc || appName"
         class="absolute left-0 top-0 z-10 flex flex-1"
         @click="clickLogo"
       >
         <div
           class="text-foreground lg:text-foreground ml-4 mt-4 flex flex-1 items-center sm:left-6 sm:top-6"
         >
-          <img v-if="logo" :alt="appName" :src="logo" class="mr-2" width="42" />
+          <img
+            v-if="logoSrc"
+            :key="logoSrc"
+            :alt="appName"
+            :src="logoSrc"
+            class="mr-2"
+            width="42"
+          />
           <p v-if="appName" class="m-0 text-xl font-medium">
             {{ appName }}
           </p>
