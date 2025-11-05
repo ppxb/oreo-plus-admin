@@ -30,7 +30,7 @@
     "reinstall": "pnpm clean --del-lock && pnpm install",
     "test:unit": "vitest run --dom",
     "test:e2e": "turbo run test:e2e",
-    "update:deps": "npx taze -r -w",
+    "update:deps": "pnpx taze -r -w",
     "catalog": "pnpx codemod pnpm/catalog"
   },
   "devDependencies": {
